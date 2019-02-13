@@ -50,7 +50,12 @@ public class Endpoint {
 	}
 	
 	public void setResponseType(Class<?> responseType) {
-		this.responseType = responseType;
+		if (responseType == null) {
+			this.responseType = Void.class;
+		}
+		else {
+			this.responseType = responseType;
+		}
 	}
 	
 	public void addParameter(String name, Class<?> type) { // throw new ArgumentException if either is null
