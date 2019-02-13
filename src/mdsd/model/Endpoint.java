@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents an endpoint for a microservice. Consists of a valid HttpMethod, a collection of 
- * expected parameter names and their types, and a response type.
+ * Represents an endpoint for a microservice. Consists of a name, a valid HttpMethod, 
+ * a collection of expected parameter names and their types, and a response type.
  * 
  * @author Niels
  *
