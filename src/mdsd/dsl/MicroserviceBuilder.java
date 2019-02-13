@@ -22,6 +22,7 @@ public abstract class MicroserviceBuilder {
 	private void buildAndVerifyModel() {
 		build();
 		// verify and handle illegal states and errors
+		//metaModel = new MetaModel();
 	}
 
 	/**

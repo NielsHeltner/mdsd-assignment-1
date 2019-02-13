@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents an endpoint for a microservice. Consists of a name, a valid HttpMethod, 
+ * Represents an endpoint for a microservice. Consists of a path, a valid HttpMethod, 
  * a collection of expected parameter names and their types, and a response type.
  * 
  * @author Niels
@@ -14,9 +14,9 @@ import java.util.Map;
 public class Endpoint {
 	
 	/**
-	 * The name of this endpoint, which corresponds to the path in the URL.
+	 * The path of this endpoint, which corresponds to the path in the URL.
 	 */
-	private String name;
+	private String path;
 	
 	/**
 	 * The valid HttpMethod for this endpoint.
@@ -37,10 +37,13 @@ public class Endpoint {
 	
 	/**
 	 * Construct
-	 * @param name the name of this endpoint
+	 * @param path the path of this endpoint
 	 */
-	public Endpoint(String name) {
-		this.name = name;
+	public Endpoint(String path) {
+		if (!path.substring(0).equals("/")) {
+			path = "/" + path;
+		}
+		this.path = path;
 		parameters = new HashMap<String, Class<?>>();
 		responseType = Void.class;
 	}
@@ -62,8 +65,8 @@ public class Endpoint {
 		parameters.put(name, type);
 	}
 	
-	public String getName() {
-		return name;
+	public String getPath() {
+		return path;
 	}
 	
 	public HttpMethod getHttpMethod() {

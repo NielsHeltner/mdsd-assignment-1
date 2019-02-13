@@ -2,9 +2,9 @@ package mdsd.model;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,9 +27,9 @@ public class Microservice {
 	private URL url;
 	
 	/**
-	 * The collection of endpoints this microservice contains.
+	 * Lookup table of endpoints this microservice contains.
 	 */
-	private List<Endpoint> endpoints;
+	private Map<String, Endpoint> endpoints;
 	
 	/**
 	 * Construct
@@ -41,12 +41,12 @@ public class Microservice {
 	 */
 	public Microservice(String name, String location, int port) throws MalformedURLException { // throws Exception for the fluent API to handle
 		this.name = name;
-		url = new URL(location + ":" + port); // should have a makeUrl method that verifies it's a correct url
-		endpoints = new ArrayList<Endpoint>();
+		url = new URL("http://" + location + ":" + port); // should have a makeUrl method that verifies it's a correct url
+		endpoints = new HashMap<String, Endpoint>();
 	}
 	
 	public void addEndpoint(Endpoint endpoint) {
-		endpoints.add(endpoint);
+		endpoints.put(endpoint.getPath(), endpoint);
 	}
 	
 	public String getName() {
@@ -61,8 +61,17 @@ public class Microservice {
 	 * Gets a read-only collection of exposed Endpoints.
 	 * @return
 	 */
-	public List<Endpoint> getEndpoints() {
-		return Collections.unmodifiableList(endpoints);
+	public Collection<Endpoint> getEndpoints() {
+		return Collections.unmodifiableCollection(endpoints.values());
+	}
+	
+	/**
+	 * Get a specific endpoint
+	 * @param path the path corresponding to the endpoint to retrieve
+	 * @return
+	 */
+	public Endpoint getEndpoint(String path) {
+		return endpoints.get(path);
 	}
 
 }
