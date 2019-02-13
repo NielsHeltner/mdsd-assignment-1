@@ -57,6 +57,10 @@ public class Endpoint {
 		parameters.put(name, type);
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public HttpMethod getHttpMethod() {
 		return method;
 	}
