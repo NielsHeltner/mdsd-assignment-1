@@ -70,7 +70,7 @@ public class Endpoint {
 	}
 	
 	/**
-	 * Gets the read-only collection of key-value pairs that describe the expected parameters
+	 * Gets a read-only collection of key-value pairs that describe the expected parameters
 	 * for this endpoint.
 	 * @return
 	 */
