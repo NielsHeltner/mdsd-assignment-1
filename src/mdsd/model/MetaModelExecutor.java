@@ -45,10 +45,9 @@ public class MetaModelExecutor {
 			}
 			request.writeTo(socket.getOutputStream());
 			
-			RawHttpResponse<?> response = http.parseResponse(socket.getInputStream());
-			System.out.println(httpUtil.getBody(response));
+			RawHttpResponse<?> response = http.parseResponse(socket.getInputStream()).eagerly();
+			System.out.println("Response: " + httpUtil.getBody(response));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

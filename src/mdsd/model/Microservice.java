@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -89,38 +88,34 @@ public class Microservice {
 		try {
 	        RawHttp http = new RawHttp();
 	        HttpUtil httpUtil = new HttpUtil();
-	        RawHttpRequest request = http.parseRequest(clientSocket.getInputStream());
-	        
-	        RequestVerifier verifier = new RequestVerifier(request, this);
-	        boolean verified = verifier.verify();
-	        
+	        RawHttpRequest request = http.parseRequest(clientSocket.getInputStream()).eagerly();
+
 	        String path = request.getStartLine().getUri().getPath();
-	        Endpoint endpoint = getEndpoint(path);
-	        if (endpoint == null) {
-	        	System.out.println("Microservice " + name + " does not contain endpoint " + path);
+	        if (verifyPath(path)) {
+	        	Endpoint endpoint = getEndpoint(path);
+	        	System.out.println("Found endpoint " + endpoint.getPath());
+	        	if (endpoint.verify(request)) {
+	        		//sendResponse(http, clientSocket, endpoint.invoke());
+	        	}
 	        }
 	        else {
-	        	System.out.println("Found endpddoint " + endpoint.getPath());
-	        	
-	        	HttpMethod method = HttpMethod.valueOf(request.getStartLine().getMethod());
-	        	if (endpoint.getHttpMethod() != method) {
-	        		System.out.println("Endpoint " + endpoint.getPath() + " supports http method " + endpoint.getHttpMethod() + " but received " + method);
-	        	}
-	        	else {
-	        		// parse body and check parameters
-	        	}
+	        	System.out.println("Microservice " + name + " does not contain endpoint " + path);
 	        }
-	        //System.out.println(request.getBody().get().asRawString(Charset.defaultCharset()));
-	        
-	        System.out.println(httpUtil.getBody(request));
-	        
-	        http.parseResponse("HTTP/1.1 200 OK\r\n" + 
-	        					"Content-Type: text/plain\r\n").withBody(new StringBody("response from " + name))
-	        		.writeTo(clientSocket.getOutputStream());;
+	        sendResponse(http, clientSocket, "hello from " + name);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void sendResponse(RawHttp http, Socket clientSocket, Object content) throws IOException {
+		http.parseResponse("HTTP/1.1 200 OK\r\n" + 
+				"Content-Type: text/plain\r\n")
+			.withBody(new StringBody(content.toString()))
+			.writeTo(clientSocket.getOutputStream());
+	}
+	
+	private boolean verifyPath(String path) {
+		return getEndpoint(path) != null;
 	}
 	
 	public void addEndpoint(Endpoint endpoint) {

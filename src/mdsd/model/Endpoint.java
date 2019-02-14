@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import rawhttp.core.RawHttpRequest;
+
 /**
  * Represents an endpoint for a microservice. Consists of a path, a valid HttpMethod, 
  * a collection of expected parameter names and their types, and a response type.
@@ -46,6 +48,35 @@ public class Endpoint {
 		this.path = path;
 		parameters = new HashMap<String, Class<?>>();
 		responseType = Void.class;
+	}
+	
+	public boolean verify(RawHttpRequest request) {
+		HttpMethod method = HttpMethod.valueOf(request.getStartLine().getMethod());
+		if (verifyMethod(method)) {
+			System.out.println("Verified method " + method);
+			HttpUtil httpUtil = new HttpUtil();
+			if (verifyParameters(httpUtil.toMap(httpUtil.getBody(request)))) {
+				System.out.println("Verified parameters");
+				return true;
+			}
+			else {
+				System.out.println("Did not verify parameters");
+			}
+		}
+    	else {
+    		System.out.println("Endpoint " + getPath() + " supports http method " + getHttpMethod() + " but received " + method);
+    	}
+		return false;
+	}
+	
+	private boolean verifyParameters(Map<String, Object> parameters) {
+		//loop through the two maps and compare
+
+		return true;
+	}
+	
+	private boolean verifyMethod(HttpMethod method) {
+		return this.method.equals(method);
 	}
 	
 	public void setHttpMethod(HttpMethod method) {
