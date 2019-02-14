@@ -1,11 +1,22 @@
 package mdsd.model;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import rawhttp.core.RawHttp;
+import rawhttp.core.RawHttpRequest;
+import rawhttp.core.body.StringBody;
 
 /**
  * A microservice consists of a name, an internet location in the form of a URL,
@@ -31,6 +42,9 @@ public class Microservice {
 	 */
 	private Map<String, Endpoint> endpoints;
 	
+	private ServerSocket serverSocket;
+	private ExecutorService pool;
+	
 	/**
 	 * Construct
 	 * @param name the name of the microservice
@@ -43,6 +57,63 @@ public class Microservice {
 		this.name = name;
 		url = new URL("http://" + location + ":" + port); // should have a makeUrl method that verifies it's a correct url
 		endpoints = new HashMap<String, Endpoint>();
+		
+		pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		
+		new Thread(() -> { // to be able to have multiple servers in same JVM instance
+			startService();
+		}).start();
+	}
+	
+	private void startService() {
+		try {
+			serverSocket = new ServerSocket(url.getPort());
+			while (!serverSocket.isClosed()) {
+		        Socket clientSocket = serverSocket.accept();
+				pool.execute(() -> {
+					handleIncomingRequest(clientSocket);
+				});
+			}
+			try {
+				pool.shutdown();
+				pool.awaitTermination(10, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void handleIncomingRequest(Socket clientSocket) {
+		try {
+	        RawHttp http = new RawHttp();
+	        RawHttpRequest request = http.parseRequest(clientSocket.getInputStream());
+	        
+	        String path = request.getStartLine().getUri().getPath();
+	        Endpoint endpoint = getEndpoint(path);
+	        if (endpoint == null) {
+	        	System.out.println("Microservice " + name + " does not contain endpoint " + path);
+	        }
+	        else {
+	        	System.out.println("Found endpoint " + endpoint.getPath());
+	        	
+	        	HttpMethod method = HttpMethod.valueOf(request.getStartLine().getMethod());
+	        	if (endpoint.getHttpMethod() != method) {
+	        		System.out.println("Endpoint " + endpoint.getPath() + " supports http method " + endpoint.getHttpMethod() + " but received " + method);
+	        	}
+	        	else {
+	        		// parse body and check parameters
+	        	}
+	        }
+	        System.out.println(request.getBody().get().asRawString(Charset.defaultCharset()));
+	        
+	        http.parseResponse("HTTP/1.1 200 OK\r\n" + 
+	        					"Content-Type: text/plain\r\n").withBody(new StringBody("response from " + name)).writeTo(clientSocket.getOutputStream());;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void addEndpoint(Endpoint endpoint) {
