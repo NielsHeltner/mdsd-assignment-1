@@ -1,6 +1,14 @@
 package mdsd.model;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.Charset;
+
+import rawhttp.core.RawHttp;
+import rawhttp.core.RawHttpRequest;
+import rawhttp.core.RawHttpResponse;
+import rawhttp.core.body.StringBody;
 
 /**
  * Meta model executor: executes metamodel
@@ -16,6 +24,28 @@ public class MetaModelExecutor {
 		
 		System.out.println("Meta model contains: ");
 		System.out.println(metaModel);
+	}
+	
+	public void request(URL url, HttpMethod method) {
+		try {
+			String location = url.getHost();
+			int port = url.getPort();
+			String path = url.getPath();
+			
+			Socket socket = new Socket(location, port);
+	
+			RawHttp http = new RawHttp();
+			RawHttpRequest request = http.parseRequest(method + " " + path + " HTTP/1.1\r\n" + 
+							"Host: " + location + ":"+ port + "\r\n").withBody(new StringBody("username=3"));
+			request.writeTo(socket.getOutputStream());
+			
+			RawHttpResponse<?> response = http.parseResponse(socket.getInputStream());
+			
+			System.out.println(response.getBody().get().asRawString(Charset.defaultCharset()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
