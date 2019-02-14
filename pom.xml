@@ -3,6 +3,15 @@
   <groupId>mdsd-assignment-1</groupId>
   <artifactId>mdsd-assignment-1</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  <dependencies>
+  	<dependency>
+	    <groupId>com.mashape.unirest</groupId>
+	    <artifactId>unirest-java</artifactId>
+	    <version>1.4.9</version>
+	</dependency>
+  </dependencies>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
