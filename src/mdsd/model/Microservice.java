@@ -90,6 +90,9 @@ public class Microservice {
 	        RawHttp http = new RawHttp();
 	        RawHttpRequest request = http.parseRequest(clientSocket.getInputStream());
 	        
+	        RequestVerifier verifier = new RequestVerifier(request, this);
+	        boolean verified = verifier.verify();
+	        
 	        String path = request.getStartLine().getUri().getPath();
 	        Endpoint endpoint = getEndpoint(path);
 	        if (endpoint == null) {
@@ -109,7 +112,8 @@ public class Microservice {
 	        System.out.println(request.getBody().get().asRawString(Charset.defaultCharset()));
 	        
 	        http.parseResponse("HTTP/1.1 200 OK\r\n" + 
-	        					"Content-Type: text/plain\r\n").withBody(new StringBody("response from " + name)).writeTo(clientSocket.getOutputStream());;
+	        					"Content-Type: text/plain\r\n").withBody(new StringBody("response from " + name))
+	        		.writeTo(clientSocket.getOutputStream());;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
