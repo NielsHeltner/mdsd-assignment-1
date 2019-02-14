@@ -23,7 +23,7 @@ public class Cinema {
 			parameters.put("username", "niels");
 			parameters.put("password", "123");
 			executor.request(new URL("http://localhost:5000/login"), POST, parameters);
-			executor.request(new URL("http://localhost:5000/login"), POST);
+			executor.request(new URL("http://localhost:5000/login"), GET);
 			executor.request(new URL("http://localhost:5001/movies1"), GET);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

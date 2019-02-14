@@ -3,9 +3,11 @@ package mdsd.dsl;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mdsd.model.Endpoint;
 import mdsd.model.HttpMethod;
+import mdsd.model.Invocable;
 import mdsd.model.MetaModel;
 import mdsd.model.Microservice;
 
@@ -92,6 +94,17 @@ public abstract class MicroserviceBuilder {
 			throw new IllegalStateException("Cannot configure endpoint response type before creating endpoint.");
 		}
 		currentMicroservice.getEndpoint(currentPath).setResponseType(responseType);
+		return this;
+	}
+	
+	public MicroserviceBuilder function(Invocable<Map<String, Object>, Object> invocation) {
+		if (currentMicroservice == null) {
+			throw new IllegalStateException("Cannot configure endpoint response type before creating microservice.");
+		}
+		if (currentPath == null) {
+			throw new IllegalStateException("Cannot configure endpoint response type before creating endpoint.");
+		}
+		currentMicroservice.getEndpoint(currentPath).setInvocation(invocation);
 		return this;
 	}
 
