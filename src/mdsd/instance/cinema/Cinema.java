@@ -7,9 +7,14 @@ import mdsd.model.MetaModelExecutor;
 
 public class Cinema {
 	
-	public static void main(String[] args) throws MalformedURLException {
+	public static void main(String[] args) {
 		MetaModelExecutor executor = new MetaModelExecutor(new CinemaScript().getMetaModel());
-		executor.handleRequest(new URL("http://localhost:5001/movies"));
+		try {
+			executor.handleRequest(new URL("http://localhost:5001/movies"));
+			executor.handleRequest(new URL("http://localhost:5000/login"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
