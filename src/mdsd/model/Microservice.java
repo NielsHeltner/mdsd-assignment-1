@@ -88,6 +88,7 @@ public class Microservice {
 	private void handleIncomingRequest(Socket clientSocket) {
 		try {
 	        RawHttp http = new RawHttp();
+	        HttpUtil httpUtil = new HttpUtil();
 	        RawHttpRequest request = http.parseRequest(clientSocket.getInputStream());
 	        
 	        RequestVerifier verifier = new RequestVerifier(request, this);
@@ -99,7 +100,7 @@ public class Microservice {
 	        	System.out.println("Microservice " + name + " does not contain endpoint " + path);
 	        }
 	        else {
-	        	System.out.println("Found endpoint " + endpoint.getPath());
+	        	System.out.println("Found endpddoint " + endpoint.getPath());
 	        	
 	        	HttpMethod method = HttpMethod.valueOf(request.getStartLine().getMethod());
 	        	if (endpoint.getHttpMethod() != method) {
@@ -109,7 +110,9 @@ public class Microservice {
 	        		// parse body and check parameters
 	        	}
 	        }
-	        System.out.println(request.getBody().get().asRawString(Charset.defaultCharset()));
+	        //System.out.println(request.getBody().get().asRawString(Charset.defaultCharset()));
+	        
+	        System.out.println(httpUtil.getBody(request));
 	        
 	        http.parseResponse("HTTP/1.1 200 OK\r\n" + 
 	        					"Content-Type: text/plain\r\n").withBody(new StringBody("response from " + name))

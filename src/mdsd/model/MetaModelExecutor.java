@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
@@ -18,15 +19,17 @@ import rawhttp.core.body.StringBody;
 public class MetaModelExecutor {
 	
 	private MetaModel metaModel;
+	private HttpUtil httpUtil;
 	
 	public MetaModelExecutor(MetaModel metaModel) {
 		this.metaModel = metaModel;
+		httpUtil = new HttpUtil();
 		
 		System.out.println("Meta model contains: ");
 		System.out.println(metaModel);
 	}
 	
-	public void request(URL url, HttpMethod method) {
+	public void request(URL url, HttpMethod method, Map<String, Object> parameters) {
 		try {
 			String location = url.getHost();
 			int port = url.getPort();
@@ -36,16 +39,22 @@ public class MetaModelExecutor {
 	
 			RawHttp http = new RawHttp();
 			RawHttpRequest request = http.parseRequest(method + " " + path + " HTTP/1.1\r\n" + 
-							"Host: " + location + ":"+ port + "\r\n").withBody(new StringBody("username=3"));
+							"Host: " + location + ":"+ port + "\r\n");
+			if (parameters != null && !parameters.isEmpty()) {
+				request = request.withBody(new StringBody(httpUtil.toString(parameters)));
+			}
 			request.writeTo(socket.getOutputStream());
 			
 			RawHttpResponse<?> response = http.parseResponse(socket.getInputStream());
-			
-			System.out.println(response.getBody().get().asRawString(Charset.defaultCharset()));
+			System.out.println(httpUtil.getBody(response));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void request(URL url, HttpMethod method) {
+		request(url, method, null);
 	}
 	
 	/**

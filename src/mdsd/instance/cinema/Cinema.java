@@ -2,6 +2,9 @@ package mdsd.instance.cinema;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 import static mdsd.model.HttpMethod.*;
 import mdsd.model.MetaModelExecutor;
 
@@ -16,7 +19,10 @@ public class Cinema {
 			executor.handleRequest(new URL("http://localhost:11/qwerty"));//illegal microservice
 			*/
 			
-			executor.request(new URL("http://localhost:5000/login"), POST);
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("username", "niels");
+			parameters.put("password", "123");
+			executor.request(new URL("http://localhost:5000/login"), POST, parameters);
 			executor.request(new URL("http://localhost:5000/login"), POST);
 			executor.request(new URL("http://localhost:5001/movies1"), GET);
 		} catch (MalformedURLException e) {
