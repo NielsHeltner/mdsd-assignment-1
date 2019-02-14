@@ -1,7 +1,5 @@
 package mdsd.model;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,16 +17,16 @@ public class MetaModel {
 	/**
 	 * Lookup table for the microservices currently in the system.
 	 */
-	private Map<URL, Microservice> microservices;
+	private Map<String, Microservice> microservices;
 	
 	/**
 	 * Construct
 	 * @param microservices the collection of microservices the system consists of
 	 */
 	public MetaModel(List<Microservice> microservices) {
-		this.microservices = new HashMap<URL, Microservice>();
+		this.microservices = new HashMap<String, Microservice>();
 		for (Microservice microservice : microservices) {
-			this.microservices.put(microservice.getUrl(), microservice);
+			this.microservices.put(microservice.getUrl().getAuthority(), microservice);
 		}
 	}
 	
@@ -42,11 +40,16 @@ public class MetaModel {
 	
 	/**
 	 * Get a specific microservice
-	 * @param url the url corresponding to the microservice to rectrieve
+	 * @param url the url authority corresponding to the microservice to retrieve
 	 * @return
 	 */
-	public Microservice getMicroservice(URL url) {
+	public Microservice getMicroservice(String url) {
 		return microservices.get(url);
+	}
+	
+	@Override
+	public String toString() {
+		return "MetaModel{microservices = " + microservices.values() + "}";
 	}
 
 }
