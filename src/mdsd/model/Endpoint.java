@@ -40,7 +40,7 @@ public class Endpoint {
 	 * @param path the path of this endpoint
 	 */
 	public Endpoint(String path) {
-		if (!path.substring(0).equals("/")) {
+		if (!path.substring(0, 1).equals("/")) {
 			path = "/" + path;
 		}
 		this.path = path;
@@ -82,6 +82,11 @@ public class Endpoint {
 	 */
 	public Map<String, Class<?>> getParameters() {
 		return Collections.unmodifiableMap(parameters);
+	}
+	
+	@Override
+	public String toString() {
+		return "Endpoint{path = " + path + ", http method = " + method + ", parameters = " + parameters + ", response type = " + responseType + "}";
 	}
 
 }
