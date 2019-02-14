@@ -3,6 +3,7 @@ package mdsd.model;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import rawhttp.core.RawHttpRequest;
 
@@ -36,6 +37,8 @@ public class Endpoint {
 	 * Defaults to Void.class if none is given.
 	 */
 	private Class<?> responseType;
+	
+	private Invocable<Map<String, Object>, Object> invocation;
 	
 	/**
 	 * Construct
@@ -77,6 +80,14 @@ public class Endpoint {
 	
 	private boolean verifyMethod(HttpMethod method) {
 		return this.method.equals(method);
+	}
+	
+	public void setInvocation(Invocable<Map<String, Object>, Object> invocation) {
+		this.invocation = invocation;
+	}
+	
+	public Object invoke(Map<String, Object> parameters) {
+		return invocation.accept(parameters);
 	}
 	
 	public void setHttpMethod(HttpMethod method) {

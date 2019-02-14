@@ -95,7 +95,8 @@ public class Microservice {
 	        	Endpoint endpoint = getEndpoint(path);
 	        	System.out.println("Found endpoint " + endpoint.getPath());
 	        	if (endpoint.verify(request)) {
-	        		//sendResponse(http, clientSocket, endpoint.invoke());
+	        		Map<String, Object> parameters = httpUtil.toMap(httpUtil.getBody(request));
+	        		//sendResponse(http, clientSocket, endpoint.invoke(parameters));
 	        	}
 	        }
 	        else {
