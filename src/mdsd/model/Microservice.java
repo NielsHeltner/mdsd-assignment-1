@@ -71,7 +71,15 @@ public class Microservice {
 	 * @return
 	 */
 	public Endpoint getEndpoint(String path) {
+		if (!path.substring(0, 1).equals("/")) {
+			path = "/" + path;
+		}
 		return endpoints.get(path);
+	}
+	
+	@Override
+	public String toString() {
+		return "Microservice{name = " + name + ", url = " + url + ", endpoints = " + endpoints.keySet() + "}";
 	}
 
 }
