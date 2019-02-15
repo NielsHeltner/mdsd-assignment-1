@@ -1,4 +1,4 @@
-package mdsd.dsl;
+package mdsd.dsl.internal;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import mdsd.model.Microservice;
 
 /**
  * Fluent interface, representing an internal DSL, for populating the MetaModel.
- * Follows the Expression Builder pattern [Fowler].
+ * Based on the Expression Builder pattern [Fowler].
  * 
  * @author Niels
  *
@@ -40,8 +40,8 @@ public abstract class MicroserviceBuilder {
 	}
 
 	/**
-	 * Override in subclasses, must define populate meta model 
-	 * using fluent interface
+	 * Override in subclasses, must populate meta model 
+	 * using the fluent interface
 	 */
 	protected abstract void build();
 	

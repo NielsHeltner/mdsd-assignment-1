@@ -13,10 +13,10 @@ import mdsd.model.Endpoint;
 import mdsd.model.Microservice;
 import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
-import rawhttp.core.body.StringBody;
 
 /**
- * Executes a microservice model as a service exposed over a HttpSocket
+ * Executes a microservice model as a service exposed over a socket
+ * that processes HTTP messages
  * @author Niels
  *
  */
@@ -68,20 +68,15 @@ public class HttpSocketMicroserviceExecutor {
 				System.out.println("Found endpoint " + endpoint.getPath());
 				if (endpoint.verify(request)) {
 					Map<String, Object> parameters = httpUtil.toMap(httpUtil.getBody(request));
-					sendResponse(http, clientSocket, endpoint.invoke(parameters));
+					httpUtil.sendResponse(clientSocket, endpoint.invoke(parameters));
 				}
 			} else {
 				System.out.println("Microservice " + model.getName() + " does not contain endpoint " + path);
 			}
-			sendResponse(http, clientSocket, "hello from " + model.getName());
+			httpUtil.sendResponse(clientSocket, "hello from " + model.getName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void sendResponse(RawHttp http, Socket clientSocket, Object content) throws IOException {
-		http.parseResponse("HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n")
-				.withBody(new StringBody(content.toString())).writeTo(clientSocket.getOutputStream());
 	}
 
 	private boolean verifyPath(String path) {

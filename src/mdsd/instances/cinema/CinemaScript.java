@@ -1,8 +1,15 @@
 package mdsd.instances.cinema;
 
-import mdsd.dsl.MicroserviceBuilder;
 import static mdsd.model.HttpMethod.*;
 
+import mdsd.dsl.internal.MicroserviceBuilder;
+
+/**
+ * An instance of the meta model, populated using 
+ * the internal DSL.
+ * @author Niels
+ *
+ */
 public class CinemaScript extends MicroserviceBuilder {
 
 	@Override

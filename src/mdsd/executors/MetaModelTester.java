@@ -34,13 +34,12 @@ public class MetaModelTester {
 	 * @param parameters any parameters to pass to the microservice
 	 */
 	public void request(URL url, HttpMethod method, Map<String, Object> parameters) {
+		String location = url.getHost();
+		int port = url.getPort();
+		String path = url.getPath();
+		System.out.println("");
+		System.out.println("Connecting to " + url.getAuthority() + path);
 		try (Socket socket = new Socket()) {
-			String location = url.getHost();
-			int port = url.getPort();
-			String path = url.getPath();
-			
-			System.out.println("");
-			System.out.println("Connecting to " + location + ":" + port + path);
 			socket.connect(new InetSocketAddress(location, port));
 	
 			RawHttp http = new RawHttp();
@@ -54,7 +53,7 @@ public class MetaModelTester {
 			RawHttpResponse<?> response = http.parseResponse(socket.getInputStream()).eagerly();
 			System.out.println("Response: " + httpUtil.getBody(response));
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Unable to connect to microservice at " + url.getAuthority() + path);
 		}
 	}
 	

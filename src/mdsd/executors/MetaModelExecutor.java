@@ -3,21 +3,19 @@ package mdsd.executors;
 import java.util.ArrayList;
 import java.util.List;
 
-import mdsd.executors.util.HttpUtil;
 import mdsd.model.MetaModel;
 import mdsd.model.Microservice;
 
 /**
- * Class for creating new instances of subclasses of MicroserviceExecutor
- * to execute the meta model.
+ * Class for executing a meta model, by passing each microservice
+ * it contains into a microservice executor.
  * 
  * @author Niels
  */
 public class MetaModelExecutor {
 	
-	private MetaModel metaModel;
+	private final MetaModel metaModel;
 	private List<HttpSocketMicroserviceExecutor> executors;
-	private HttpUtil httpUtil;
 	
 	public MetaModelExecutor(MetaModel metaModel) {
 		this.metaModel = metaModel;
@@ -27,7 +25,6 @@ public class MetaModelExecutor {
 			executor.startService();
 			executors.add(executor);
 		}
-		httpUtil = new HttpUtil();
 		
 		System.out.println("Meta model contains: ");
 		System.out.println(metaModel);
