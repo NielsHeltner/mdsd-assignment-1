@@ -1,9 +1,9 @@
 package mdsd.model;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Map;
 
 import rawhttp.core.RawHttp;
@@ -30,12 +30,12 @@ public class MetaModelExecutor {
 	}
 	
 	public void request(URL url, HttpMethod method, Map<String, Object> parameters) {
-		try {
+		try (Socket socket = new Socket()) {
 			String location = url.getHost();
 			int port = url.getPort();
 			String path = url.getPath();
 			
-			Socket socket = new Socket(location, port);
+			socket.connect(new InetSocketAddress(location, port));
 	
 			RawHttp http = new RawHttp();
 			RawHttpRequest request = http.parseRequest(method + " " + path + " HTTP/1.1\r\n" + 

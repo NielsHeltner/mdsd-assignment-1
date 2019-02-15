@@ -40,8 +40,7 @@ public class Microservice {
 	 * Lookup table of endpoints this microservice contains.
 	 */
 	private Map<String, Endpoint> endpoints;
-	
-	private ServerSocket serverSocket;
+
 	private ExecutorService pool;
 	
 	/**
@@ -65,8 +64,7 @@ public class Microservice {
 	}
 	
 	private void startService() {
-		try {
-			serverSocket = new ServerSocket(url.getPort());
+		try (ServerSocket serverSocket = new ServerSocket(url.getPort())) {
 			while (!serverSocket.isClosed()) {
 		        Socket clientSocket = serverSocket.accept();
 				pool.execute(() -> {
