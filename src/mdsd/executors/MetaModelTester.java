@@ -28,10 +28,10 @@ public class MetaModelTester {
 	}
 	
 	/**
-	 * Simulates network data for communicating with a microservice socket
-	 * @param url
-	 * @param method
-	 * @param parameters
+	 * Simulates network data for communicating with a microservice over a network
+	 * @param url the url to reach the desired microservice
+	 * @param method the http method to invoke on the microservice
+	 * @param parameters any parameters to pass to the microservice
 	 */
 	public void request(URL url, HttpMethod method, Map<String, Object> parameters) {
 		try (Socket socket = new Socket()) {
