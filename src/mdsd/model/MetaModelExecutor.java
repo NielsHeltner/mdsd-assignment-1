@@ -35,6 +35,8 @@ public class MetaModelExecutor {
 			int port = url.getPort();
 			String path = url.getPath();
 			
+			System.out.println("");
+			System.out.println("Connecting to " + location + ":" + port + path);
 			socket.connect(new InetSocketAddress(location, port));
 	
 			RawHttp http = new RawHttp();

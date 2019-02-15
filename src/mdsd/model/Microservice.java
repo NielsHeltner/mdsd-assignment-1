@@ -67,6 +67,7 @@ public class Microservice {
 		try (ServerSocket serverSocket = new ServerSocket(url.getPort())) {
 			while (!serverSocket.isClosed()) {
 		        Socket clientSocket = serverSocket.accept();
+		        System.out.println("Microservice " + name + " accepting incoming request");
 				pool.execute(() -> {
 					handleIncomingRequest(clientSocket);
 				});

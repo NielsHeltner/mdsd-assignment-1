@@ -12,8 +12,8 @@ public class CinemaScript extends MicroserviceBuilder {
 	        parameter("username", String.class).parameter("password", String.class).
 	        response(Boolean.class). // was login successful?
 	        function((p) -> {
-	        	System.out.println("Hello from stored method / deferred invocation");
-	        	return "it worked!";
+	        	int i = 2 + 2;
+	        	return "Hello from stored method / deferred invocation";
 	        }).
 	    endpoint("logout").
 	        parameter("username", String.class).
