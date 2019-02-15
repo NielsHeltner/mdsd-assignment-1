@@ -20,7 +20,7 @@ The `HttpSocketMicroserviceExecutor` executes the `Microservice` model by exposi
 The `MetaModelTester` class contains testing functionality for simulating a client interacting with the executing `Microservice`s over a network.
 
 ## mdsd.instances.cinema
-This package contains classes that use the internal DSL and populates the meta model.
+This package contains classes that represent instances of the meta model, by using the internal DSL to populate it.
 
 The class `CinemaScript` uses the internal DSL to populate the meta model, while the class `Cinema` acts as a main class. It invokes the `MetaModelExecutor`, passing it the populated meta model. It then invokes the methods of the `MetaModelTester` to showcase usecases of the system, and how it behaves.
 
