@@ -1,24 +1,27 @@
-package mdsd.instance.cinema;
+package mdsd.instances.cinema;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import mdsd.executors.MetaModelExecutor;
+import mdsd.executors.MetaModelTester;
+
 import static mdsd.model.HttpMethod.*;
-import mdsd.model.MetaModelExecutor;
 
 public class Cinema {
 	
 	public static void main(String[] args) {
-		MetaModelExecutor executor = new MetaModelExecutor(new CinemaScript().getMetaModel());
+		new MetaModelExecutor(new CinemaScript().getMetaModel());
+		MetaModelTester tester = new MetaModelTester();
 		try {
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("username", "niels");
 			parameters.put("password", "123");
-			executor.request(new URL("http://localhost:5000/login"), POST, parameters);
-			executor.request(new URL("http://localhost:5000/login"), GET);
-			executor.request(new URL("http://localhost:5001/movies1"), GET);
+			tester.request(new URL("http://localhost:5000/login"), POST, parameters);
+			tester.request(new URL("http://localhost:5000/login"), GET);
+			tester.request(new URL("http://localhost:5001/movies1"), GET);
 			
 			
 			

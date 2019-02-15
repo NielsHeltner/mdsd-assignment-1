@@ -3,8 +3,8 @@ package mdsd.model;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
+import mdsd.executors.util.HttpUtil;
 import rawhttp.core.RawHttpRequest;
 
 /**

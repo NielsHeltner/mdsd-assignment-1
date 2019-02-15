@@ -1,4 +1,4 @@
-package mdsd.model;
+package mdsd.executors.util;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

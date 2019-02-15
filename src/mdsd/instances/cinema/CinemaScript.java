@@ -1,4 +1,4 @@
-package mdsd.instance.cinema;
+package mdsd.instances.cinema;
 
 import mdsd.dsl.MicroserviceBuilder;
 import static mdsd.model.HttpMethod.*;
@@ -13,7 +13,7 @@ public class CinemaScript extends MicroserviceBuilder {
 	        response(Boolean.class). // was login successful?
 	        function((p) -> {
 	        	int i = 2 + 2;
-	        	return "Hello from stored method / deferred invocation";
+	        	return "Hello from deferred invocation. received username " + p.get("username");
 	        }).
 	    endpoint("logout").
 	        parameter("username", String.class).
