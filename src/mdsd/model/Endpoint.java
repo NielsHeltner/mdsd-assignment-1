@@ -39,6 +39,9 @@ public class Endpoint {
      */
     private Class<?> responseType;
 
+    /**
+     * The method that should be invoked when this endpoint is invoked.
+     */
     private Invocable<Map<String, Object>, Object> invocation;
 
     /**

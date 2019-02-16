@@ -28,6 +28,8 @@ public class Microservice {
 
     /**
      * Lookup table of endpoints this microservice contains.
+     * Implemented as Map instead of List to be able to look up
+     * in time complexity O(1), given the name of the endpoint.
      */
     private Map<String, Endpoint> endpoints;
 

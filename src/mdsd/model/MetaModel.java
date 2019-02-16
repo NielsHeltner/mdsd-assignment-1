@@ -16,6 +16,8 @@ public class MetaModel {
 
     /**
      * Lookup table for the microservices currently in the system.
+     * Implemented as Map instead of List to be able to look up
+     * in time complexity O(1), given the name of the service.
      */
     private Map<String, Microservice> microservices;
 

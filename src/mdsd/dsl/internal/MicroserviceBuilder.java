@@ -29,8 +29,14 @@ public abstract class MicroserviceBuilder {
 
     private List<Microservice> microservices = new ArrayList<>();
 
+    /**
+     * Context variable for the current microservice being built.
+     */
     private Microservice currentMicroservice;
 
+    /**
+     * Content variable for the current endpoint path being built.
+     */
     private String currentPath;
 
     private void buildAndVerifyModel() {
@@ -103,7 +109,7 @@ public abstract class MicroserviceBuilder {
             throw new IllegalStateException("Cannot configure endpoint response type before creating microservice.");
         }
         if (currentPath == null) {
-            throw new IllegalStateException("Cannot configure endpoint response type before creating endpoint.");
+            throw new IllegalStateException("Cannot configure endpoint function before creating endpoint.");
         }
         currentMicroservice.getEndpoint(currentPath).setInvocation(invocation);
         return this;
