@@ -11,6 +11,12 @@ import java.util.Map;
 /**
  * Specializes the HttpSocketMicroserviceExecutor by adding a verification step
  * before executing the request.
+ * (Notes for self below:)
+ * Could also have been implemented as a Decorator, however the method of
+ * interest (handleIncomingRequest) is only called from within the class itself.
+ * Could also have been implemented as a Strategy, however there would only be
+ * a single strategy (this one), and that looks more like a Template.
+ * The Template pattern seems most fit.
  *
  * @author Niels
  *
