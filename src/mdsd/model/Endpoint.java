@@ -58,35 +58,6 @@ public class Endpoint {
         responseType = Void.class;
     }
 
-    public boolean verify(RawHttpRequest request) {
-        HttpMethod requestMethod = HttpMethod.valueOf(request.getStartLine().getMethod());
-        if (verifyMethod(requestMethod)) {
-            System.out.println("Verified method " + requestMethod);
-            HttpUtil httpUtil = new HttpUtil();
-            if (verifyParameters(httpUtil.toMap(httpUtil.getBody(request)))) {
-                System.out.println("Verified parameters");
-                return true;
-            }
-            else {
-                System.out.println("Did not verify parameters");
-            }
-        }
-        else {
-            System.out.println("Endpoint " + getPath() + " supports http method " + getHttpMethod() + " but received " + requestMethod);
-        }
-        return false;
-    }
-
-    private boolean verifyParameters(Map<String, Object> parameters) {
-        //loop through the two maps and compare
-
-        return true;
-    }
-
-    private boolean verifyMethod(HttpMethod method) {
-        return this.method.equals(method);
-    }
-
     public void setInvocation(Invocable<Map<String, Object>, Object> invocation) {
         this.invocation = invocation;
     }

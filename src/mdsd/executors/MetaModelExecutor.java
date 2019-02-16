@@ -21,7 +21,7 @@ public class MetaModelExecutor {
         this.metaModel = metaModel;
         executors = new ArrayList<>();
         for (Microservice microservice : metaModel.getMicroservices()) {
-            HttpSocketMicroserviceExecutor executor = new HttpSocketMicroserviceExecutor(microservice);
+            HttpSocketMicroserviceExecutor executor = new MicroserviceVerifier(microservice);
             executors.add(executor);
         }
 

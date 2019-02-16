@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 import mdsd.executors.util.HttpUtil;
 import mdsd.model.Endpoint;
 import mdsd.model.Microservice;
-import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
 
 /**
@@ -44,9 +43,15 @@ public class HttpSocketMicroserviceExecutor {
                 this.serverSocket = serverSocket;
                 while (!serverSocket.isClosed()) {
                     Socket clientSocket = serverSocket.accept();
+                    HttpUtil httpUtil = new HttpUtil();
                     System.out.println("Microservice " + model.getName() + " accepting incoming request");
                     pool.execute(() -> {
-                        handleIncomingRequest(clientSocket);
+                        try {
+                            String response = handleIncomingRequest(httpUtil.parseRequest(clientSocket));
+                            httpUtil.sendResponse(clientSocket, response);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     });
                 }
             }
@@ -77,33 +82,19 @@ public class HttpSocketMicroserviceExecutor {
         }
     }
 
-    private void handleIncomingRequest(Socket clientSocket) {
-        try {
-            RawHttp http = new RawHttp();
-            HttpUtil httpUtil = new HttpUtil();
-            RawHttpRequest request = http.parseRequest(clientSocket.getInputStream()).eagerly();
+    protected String handleIncomingRequest(RawHttpRequest request) {
+        HttpUtil httpUtil = new HttpUtil();
+        String path = request.getStartLine().getUri().getPath();
 
-            String path = request.getStartLine().getUri().getPath();
-            if (verifyPath(path)) {
-                Endpoint endpoint = model.getEndpoint(path);
-                System.out.println("Found endpoint " + endpoint.getPath());
-                if (endpoint.verify(request)) {
-                    Map<String, Object> parameters = httpUtil.toMap(httpUtil.getBody(request));
-                    httpUtil.sendResponse(clientSocket, endpoint.invoke(parameters));
-                }
-            }
-            else {
-                System.out.println("Microservice " + model.getName() + " does not contain endpoint " + path);
-            }
-            httpUtil.sendResponse(clientSocket, "hello from " + model.getName());
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        Endpoint endpoint = model.getEndpoint(path);
+
+        Map<String, Object> parameters = httpUtil.toMap(httpUtil.getBody(request));
+
+        return endpoint.invoke(parameters).toString();
     }
 
-    private boolean verifyPath(String path) {
-        return model.getEndpoint(path) != null;
+    protected Microservice getModel() {
+        return model;
     }
 
 }

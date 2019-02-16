@@ -8,6 +8,7 @@ import java.util.Map;
 
 import rawhttp.core.HttpMessage;
 import rawhttp.core.RawHttp;
+import rawhttp.core.RawHttpRequest;
 import rawhttp.core.body.StringBody;
 
 /**
@@ -81,6 +82,10 @@ public class HttpUtil {
             }
         });
         return result.toString();
+    }
+
+    public RawHttpRequest parseRequest(Socket socket) throws IOException {
+        return new RawHttp().parseRequest(socket.getInputStream()).eagerly();
     }
 
     public void sendResponse(Socket clientSocket, Object content) throws IOException {
