@@ -8,6 +8,13 @@ import rawhttp.core.RawHttpRequest;
 
 import java.util.Map;
 
+/**
+ * Specializes the HttpSocketMicroserviceExecutor by adding a verification step
+ * before executing the request.
+ *
+ * @author Niels
+ *
+ */
 public class MicroserviceVerifier extends HttpSocketMicroserviceExecutor {
 
     public MicroserviceVerifier(Microservice model) {
@@ -39,7 +46,7 @@ public class MicroserviceVerifier extends HttpSocketMicroserviceExecutor {
         if (verifyMethod(requestMethod, endpoint)) {
             System.out.println("Verified method " + requestMethod);
             HttpUtil httpUtil = new HttpUtil();
-            if (verifyParameters(httpUtil.toMap(httpUtil.getBody(request)))) {
+            if (verifyParameters(httpUtil.toMap(httpUtil.getBody(request)), endpoint)) {
                 System.out.println("Verified parameters");
                 return true;
             }
@@ -57,8 +64,23 @@ public class MicroserviceVerifier extends HttpSocketMicroserviceExecutor {
         return endpoint.getHttpMethod().equals(method);
     }
 
-    private boolean verifyParameters(Map<String, Object> parameters) {
-        //loop through the two maps and compare
+    private boolean verifyParameters(Map<String, Object> parameters, Endpoint endpoint) {
+        for (Map.Entry<String, Class<?>> entry : endpoint.getParameters().entrySet()) {
+            String expectedName = entry.getKey();
+            Class<?> expectedType = entry.getValue();
+            if (parameters.containsKey(expectedName)) {
+                try {
+                    expectedType.cast(parameters.get(expectedName)); // attempt to cast received parameter value to expected type (since everything is a string after network communication)
+                } catch (ClassCastException e) {
+                    System.out.println("Expected parameter " + expectedName + " to be of type " + expectedType + " but it was not.");
+                    return false;
+                }
+            }
+            else {
+                System.out.println("Expected parameter " + expectedName + " but was not received.");
+                return false;
+            }
+        }
 
         return true;
     }

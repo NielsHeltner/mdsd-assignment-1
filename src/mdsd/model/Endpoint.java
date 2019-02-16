@@ -63,7 +63,12 @@ public class Endpoint {
     }
 
     public Object invoke(Map<String, Object> parameters) {
-        return invocation.accept(parameters);
+        if (invocation == null) {
+            return "";
+        }
+        else {
+            return invocation.accept(parameters);
+        }
     }
 
     public void setHttpMethod(HttpMethod method) {
