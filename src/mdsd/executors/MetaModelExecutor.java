@@ -22,12 +22,23 @@ public class MetaModelExecutor {
         executors = new ArrayList<>();
         for (Microservice microservice : metaModel.getMicroservices()) {
             HttpSocketMicroserviceExecutor executor = new HttpSocketMicroserviceExecutor(microservice);
-            executor.startService();
             executors.add(executor);
         }
 
         System.out.println("Meta model contains: ");
         System.out.println(metaModel);
+    }
+
+    public void startExecution() {
+        for (HttpSocketMicroserviceExecutor executor : executors) {
+            executor.startService();
+        }
+    }
+
+    public void stopExecution() {
+        for (HttpSocketMicroserviceExecutor executor : executors) {
+            executor.stopService();
+        }
     }
 
 }

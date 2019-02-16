@@ -20,7 +20,8 @@ import static mdsd.model.HttpMethod.*;
 public class Cinema {
 
     public static void main(String[] args) {
-        new MetaModelExecutor(new CinemaScript().getMetaModel());
+        MetaModelExecutor executor = new MetaModelExecutor(new CinemaScript().getMetaModel());
+        executor.startExecution();
         MetaModelTester tester = new MetaModelTester();
         try {
             Map<String, Object> parameters = new HashMap<>();
@@ -32,10 +33,13 @@ public class Cinema {
             tester.request(new URL("http://localhost:5000/qwerty"), GET); // legal microservice, illegal endpoint, illegal method, illegal parameters
             tester.request(new URL("http://localhost:1/qwerty"), GET); // illegal microservice, illegal endpoint, illegal method, illegal parameters
 
-            tester.request(new URL("http://localhost:5001/movies"), GET); // legal microservice, legal endpoint, legal method, legal parameters
+            //tester.request(new URL("http://localhost:5001/movies"), GET); // legal microservice, legal endpoint, legal method, legal parameters
         }
         catch (MalformedURLException e) {
             e.printStackTrace();
+        }
+        finally {
+            executor.stopExecution();
         }
     }
 
