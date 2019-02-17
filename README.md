@@ -17,6 +17,8 @@ The `MetaModelExecutor` takes a `MetaModel` as argument, and executes it by inst
 
 The `HttpSocketMicroserviceExecutor` executes the `Microservice` model by exposing it on a network and listening to a port. It is implemented using `Socket`s for communication, and also features threading for handling incoming requests.
 
+The `MicroserviceVerifier` specializes the `HttpSocketMicroserviceExecutor` by adding a verification step, before the incoming request is handled. It checks that the constraints defined by model are respected.
+
 The `MetaModelTester` class contains testing functionality for simulating a client interacting with the executing `Microservice`s over a network.
 
 ## mdsd.instances.cinema
@@ -25,4 +27,6 @@ This package contains classes that represent instances of the meta model, by usi
 The class `CinemaScript` uses the internal DSL to populate the meta model, while the class `Cinema` acts as a main class. It invokes the `MetaModelExecutor`, passing it the populated meta model. It then invokes the methods of the `MetaModelTester` to showcase usecases of the system, and how it behaves.
 
 ## Additional notes
+To run the project execute the main class `mdsd.instances.cinema.Cinema`.
+
 The project uses Maven for dependencies, and should be built with `mvn package` or similar.
