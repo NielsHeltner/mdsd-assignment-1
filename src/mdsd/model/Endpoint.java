@@ -64,7 +64,7 @@ public class Endpoint {
 
     public Object invoke(Map<String, Object> parameters) {
         if (invocation == null) {
-            return "No function provided";
+            return "No function provided for endpoint " + path;
         }
         else {
             return invocation.accept(parameters);

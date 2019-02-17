@@ -9,14 +9,14 @@ import rawhttp.core.RawHttpRequest;
 import java.util.Map;
 
 /**
- * Specializes the HttpSocketMicroserviceExecutor by adding a verification step
- * before executing the request.
+ * Specializes the HttpSocketMicroserviceExecutor by defining how to verify
+ * a request in context of the populated meta model.
  * (Notes for self below:)
  * Could also have been implemented as a Decorator, however the method of
  * interest (handleIncomingRequest) is only called from within the class itself.
  * Could also have been implemented as a Strategy, however there would only be
- * a single strategy (this one), and that looks more like a Template.
- * The Template pattern seems most fit.
+ * a single strategy (this one), and since every HttpSocketMicroserviceExecutor
+ * would need the same strategy, that looks more like a Template.
  *
  * @author Niels
  *
@@ -26,25 +26,21 @@ public class MicroserviceVerifier extends HttpSocketMicroserviceExecutor {
     public MicroserviceVerifier(Microservice model) {
         super(model);
     }
-
+    
     @Override
-    protected String handleIncomingRequest(RawHttpRequest request) {
-        String path = request.getStartLine().getUri().getPath();
+    protected boolean verify(RawHttpRequest request) {
+    	String path = request.getStartLine().getUri().getPath();
         if (verifyPath(path)) {
             Endpoint endpoint = getModel().getEndpoint(path);
             System.out.println("Found endpoint " + endpoint.getPath());
             if (verifyEndpoint(endpoint, request)) {
-                return super.handleIncomingRequest(request);
+                return true;
             }
         }
         else {
             System.out.println("Microservice " + getModel().getName() + " does not contain endpoint " + path);
         }
-        return "Illegal request";
-    }
-
-    private boolean verifyPath(String path) {
-        return getModel().getEndpoint(path) != null;
+        return false;
     }
 
     private boolean verifyEndpoint(Endpoint endpoint, RawHttpRequest request) {
@@ -64,6 +60,10 @@ public class MicroserviceVerifier extends HttpSocketMicroserviceExecutor {
             System.out.println("Endpoint " + endpoint.getPath() + " supports http method " + endpoint.getHttpMethod() + " but received " + requestMethod);
         }
         return false;
+    }
+
+    private boolean verifyPath(String path) {
+        return getModel().getEndpoint(path) != null;
     }
 
     private boolean verifyMethod(HttpMethod method, Endpoint endpoint) {
@@ -87,7 +87,6 @@ public class MicroserviceVerifier extends HttpSocketMicroserviceExecutor {
                 return false;
             }
         }
-
         return true;
     }
 

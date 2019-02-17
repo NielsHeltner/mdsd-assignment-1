@@ -16,12 +16,13 @@ import rawhttp.core.RawHttpRequest;
 
 /**
  * Executes a microservice model as a service exposed over a socket that
- * processes HTTP messages.
+ * processes HTTP messages. Expects to be subclassed, and override the
+ * verify method to define how a request is verified.
  *
  * @author Niels
  *
  */
-public class HttpSocketMicroserviceExecutor {
+public abstract class HttpSocketMicroserviceExecutor {
 
     /**
      * The microservice this executor uses as a model.
@@ -43,15 +44,9 @@ public class HttpSocketMicroserviceExecutor {
                 this.serverSocket = serverSocket;
                 while (!serverSocket.isClosed()) {
                     Socket clientSocket = serverSocket.accept();
-                    HttpUtil httpUtil = new HttpUtil();
                     System.out.println("Microservice " + model.getName() + " accepting incoming request");
                     pool.execute(() -> {
-                        try {
-                            String response = handleIncomingRequest(httpUtil.parseRequest(clientSocket));
-                            httpUtil.sendResponse(clientSocket, response);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        handleIncomingRequest(clientSocket);
                     });
                 }
             }
@@ -82,16 +77,25 @@ public class HttpSocketMicroserviceExecutor {
         }
     }
 
-    protected String handleIncomingRequest(RawHttpRequest request) {
-        HttpUtil httpUtil = new HttpUtil();
-        String path = request.getStartLine().getUri().getPath();
-
-        Endpoint endpoint = model.getEndpoint(path);
-
-        Map<String, Object> parameters = httpUtil.toMap(httpUtil.getBody(request));
-
-        return endpoint.invoke(parameters).toString();
+    protected void handleIncomingRequest(Socket clientSocket) {
+    	try {
+	        HttpUtil httpUtil = new HttpUtil();
+	        RawHttpRequest request = httpUtil.parseRequest(clientSocket);
+    		if (verify(request)) {
+    	        String path = request.getStartLine().getUri().getPath();
+		        Endpoint endpoint = model.getEndpoint(path);
+		
+		        Map<String, Object> parameters = httpUtil.toMap(httpUtil.getBody(request));
+		
+		        httpUtil.sendResponse(clientSocket, endpoint.invoke(parameters));
+    		}
+    		httpUtil.sendResponse(clientSocket, "Illegal request");
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
+    
+    protected abstract boolean verify(RawHttpRequest request);
 
     protected Microservice getModel() {
         return model;
