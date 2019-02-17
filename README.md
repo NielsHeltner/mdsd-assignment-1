@@ -27,6 +27,6 @@ This package contains classes that represent instances of the meta model, by usi
 The class `CinemaScript` uses the internal DSL to populate the meta model, while the class `Cinema` acts as a main class. It invokes the `MetaModelExecutor`, passing it the populated meta model. It then invokes the methods of the `MetaModelTester` to showcase usecases of the system, and how it behaves.
 
 ## Additional notes
-Execute the main class `mdsd.instances.cinema.Cinema`.
+To run the project execute the main class `mdsd.instances.cinema.Cinema`.
 
 The project uses Maven for dependencies, and should be built with `mvn package` or similar.
