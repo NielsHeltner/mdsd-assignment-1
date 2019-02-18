@@ -13,11 +13,11 @@ This package contains a single class `MicroserviceBuilder`, which is implemented
 ## mdsd.executors
 This package contains classes for executing a configured meta model.
 
-The `MetaModelExecutor` takes a `MetaModel` as argument, and executes it by instantiating a `HttpSocketMicroserviceExecutor` for each `Microservice` in the model.
+The `MetaModelExecutor` takes a `MetaModel` as argument, and executes it by instantiating a `HttpSocketMicroserviceExecutor` subclass for each `Microservice` in the model.
 
 The `HttpSocketMicroserviceExecutor` executes the `Microservice` model by exposing it on a network and listening to a port. It is implemented using `Socket`s for communication, and also features threading for handling incoming requests.
 
-The `MicroserviceVerifier` specializes the `HttpSocketMicroserviceExecutor` by adding a verification step, before the incoming request is handled. It checks that the constraints defined by model are respected.
+The `MicroserviceVerifier` specializes the `HttpSocketMicroserviceExecutor` by adding a verification step before the incoming request is handled. It checks that the constraints defined by model are respected.
 
 The `MetaModelTester` class contains testing functionality for simulating a client interacting with the executing `Microservice`s over a network.
 
